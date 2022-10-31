@@ -6,10 +6,13 @@
 /* You can just copy the headers from glm, or go through the install */
 #include <iostream>
 
-#include "Renderer.hpp"
+#include "renderer.hpp"
+#include "common.hpp"
+#include "OGL/ground_mesh.hpp"
 
-int main() {
 
+int main() 
+{
     Renderer renderer;
     renderer.initialize();
     renderer.start_looping();

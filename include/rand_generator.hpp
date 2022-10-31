@@ -1,15 +1,14 @@
 #ifndef RAND_GENERATOR_H_
 #define RAND_GENERATOR_H_
 
-#define ENABLE_LOGGER false
-
 #include <iostream>
 #include <vector>
 #include <cstdlib>
 #include <ctime>
 
-#include "Common.hpp"
+#include "common.hpp"
 
+const bool k_logger_enabled = false;
 const unsigned int k_rand_vec_length = 9973;
 
 class RandGenerator
@@ -52,7 +51,7 @@ public:
         return mean + std_deviation * random_num_vec_.at(get_offset());
     }
 
-#if ENABLE_LOGGER
+#if (k_logger_enabled)
     void logger() 
     {
         for(int i = 0; i < k_rand_vec_length; i++) 
