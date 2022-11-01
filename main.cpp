@@ -9,13 +9,14 @@
 #include "renderer.hpp"
 #include "common.hpp"
 #include "OGL/ground_mesh.hpp"
-
+#include "jello.hpp"
 
 int main() 
 {
-    Renderer renderer;
-    renderer.initialize();
-    renderer.start_looping();
+    Jello jello;
+    // Renderer renderer;
+    // renderer.initialize();
+    // renderer.start_looping();
 	return 0;
 }
 

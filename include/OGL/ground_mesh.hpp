@@ -9,13 +9,16 @@
 namespace GLObj
 {
 
-const float slices = 10;
+const float slices = 20;
 
 std::vector<glm::vec3> ground_mesh_vertices;
 std::vector<glm::uvec4> ground_mesh_indices;
 
 std::vector<glm::vec3> &get_ground_mesh_vertices() {return ground_mesh_vertices;}
 std::vector<glm::uvec4> &get_ground_mesh_indices() {return ground_mesh_indices;}
+
+glm::vec3 ground_mesh_color = {1.0f, 1.0f, 1.0f};
+float ground_mesh_edge_size = 3.0f;
 
 
 void build_ground_mesh()
@@ -26,9 +29,9 @@ void build_ground_mesh()
     {
         for (i = 0; i <= slices; ++i)
         {
-            x = 2.0f * (i / slices) - 1;
-            y = 2.0f * (j / slices) - 1;
-            z = 0.0f;
+            x = ground_mesh_edge_size * (i / slices) - (ground_mesh_edge_size / 2);
+            y = ground_mesh_edge_size * (j / slices) - (ground_mesh_edge_size / 2);
+            z = -1.0f;
             ground_mesh_vertices.push_back(glm::vec3(x, y, z));
         }
     }
@@ -50,44 +53,5 @@ void build_ground_mesh()
 
 #endif // GROUND_MESH_H
 
+
 // ref: https://stackoverflow.com/questions/58494179/how-to-create-a-grid-in-opengl-and-drawing-it-with-lines
-
-/**
- 
-  glGenVertexArrays( 1, &vao );
-  glBindVertexArray( vao );
-
-  GLuint vbo;
-  glGenBuffers( 1, &vbo );
-  glBindBuffer( GL_ARRAY_BUFFER, vbo );
-  glBufferData( GL_ARRAY_BUFFER, vertices.size()*sizeof(glm::vec3), glm::value_ptr(vertices[0]), GL_STATIC_DRAW );
-  glEnableVertexAttribArray( 0 );
-  glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, nullptr );
-
-  GLuint ibo;
-  glGenBuffers( 1, &ibo );
-  glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ibo );
-  glBufferData( GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(glm::uvec4), glm::value_ptr(indices[0]), GL_STATIC_DRAW);
-
-  glBindVertexArray(0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  lenght = (GLuint)indices.size()*4;
-
- 
-
-  // draw
-
-  glEnable(GL_DEPTH_TEST);
-
-  glBindVertexArray(vao);
-
-  glDrawElements(GL_LINES, lenght, GL_UNSIGNED_INT, NULL);
-
-  glBindVertexArray(0);
-
-  glDisable(GL_DEPTH_TEST);
-
- * 
-*/

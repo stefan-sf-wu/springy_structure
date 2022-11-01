@@ -8,7 +8,6 @@
 
 #include "common.hpp"
 
-const bool k_logger_enabled = false;
 const unsigned int k_rand_vec_length = 9973;
 
 class RandGenerator
@@ -50,17 +49,7 @@ public:
     {
         return mean + std_deviation * random_num_vec_.at(get_offset());
     }
-
-#if (k_logger_enabled)
-    void logger() 
-    {
-        for(int i = 0; i < k_rand_vec_length; i++) 
-        {
-            std::cout << random_num_vec_.at(i) << ' ';
-        }
-    }
-#endif
-
+    
     ~RandGenerator(){};
 };
 

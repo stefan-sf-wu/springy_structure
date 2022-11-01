@@ -13,7 +13,7 @@
 #include "common.hpp"
 #include "timer.hpp"
 #include "OGL/shader.hpp"
-#include "OGL/box_mesh.hpp"
+#include "OGL/tetrahedron_mesh.hpp"
 #include "OGL/ground_mesh.hpp"
 
 int default_src_width  = 1600;
@@ -94,16 +94,18 @@ private:
     GLuint ground_vao;          // vertex attribute object
     GLuint ground_mesh_vbo;     // vertex buffer object
     GLuint ground_mesh_ibo;     // index buffer object
+    GLuint ground_mesh_color;
 
-    GLuint VAO;
-    GLuint box_vbo;
+    GLuint tetrahedron_vao;
+    GLuint tetrahedron_vbo;
 
     glm::mat4 *modelMatrices_1, *modelMatrices_2;
 
     Timer timer;
 
 public:
-    Renderer() {};
+    Renderer();
+    ~Renderer();
 
     void initialize()
     {
@@ -132,27 +134,22 @@ public:
             std::cout << "Failed to initialize GLAD" << std::endl;
             return;
         }
-
-        // tell OpenGL the size of the rendering window so OpenGL knows how we want to display the data and coordinates with respect to the window.
         glViewport(0, 0, default_src_width, default_src_height);
-
-        // register a callback function on the window that gets called each time the window is resized.
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
         // Enable depth buffering, backface culling
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
+        // glEnable(GL_CULL_FACE);
+        // glCullFace(GL_BACK);
 
-        // vertex shader
         vertexShader = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
         glCompileShader(vertexShader);
-        // fragment shader
+
         fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
         glCompileShader(fragmentShader);
-        // link shaders
+
         shaderProgram = glCreateProgram();
         glAttachShader(shaderProgram, vertexShader);
         glAttachShader(shaderProgram, fragmentShader);
@@ -161,12 +158,12 @@ public:
         glDeleteShader(fragmentShader);
         glUseProgram(shaderProgram);
 
-        // box
-        glGenVertexArrays(1, &VAO);
-        glBindVertexArray(VAO);
-            glGenBuffers(1, &box_vbo);
-            glBindBuffer(GL_ARRAY_BUFFER, box_vbo);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(GLObj::box), GLObj::box, GL_STATIC_DRAW);
+        // tetrahedron
+        glGenVertexArrays(1, &tetrahedron_vao);
+        glBindVertexArray(tetrahedron_vao);
+            glGenBuffers(1, &tetrahedron_vbo);
+            glBindBuffer(GL_ARRAY_BUFFER, tetrahedron_vbo);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(GLObj::tetrahedron), GLObj::tetrahedron, GL_STATIC_DRAW);
 
         // ground mesh
         glGenVertexArrays(1, &ground_vao);
@@ -229,11 +226,12 @@ public:
         // render ground mesh
         glBindVertexArray(ground_vao);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ground_mesh_ibo);
-            glDrawElements(GL_LINES, (GLuint)GLObj::ground_mesh_indices.size()*4, GL_UNSIGNED_INT, NULL);
+            glDrawElements(GL_LINES, GLObj::ground_mesh_indices.size()*4, GL_UNSIGNED_INT, NULL);
 
-        // render box
-        glBindVertexArray(VAO);
-            glBindBuffer(GL_ARRAY_BUFFER, box_vbo);
+
+        // render tetrahedron
+        glBindVertexArray(tetrahedron_vao);
+            glBindBuffer(GL_ARRAY_BUFFER, tetrahedron_vbo);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);   
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -271,16 +269,16 @@ public:
 
     void delete_GLBuffers()
     {
-        glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &box_vbo);
+        glDeleteVertexArrays(1, &tetrahedron_vao);
+        glDeleteBuffers(1, &tetrahedron_vbo);
         glDeleteBuffers(1, &ground_mesh_vbo);
         glDeleteBuffers(1, &ground_mesh_ibo);
         glDeleteProgram(shaderProgram);
     }
 
-    ~Renderer() {};
 };
 
-
+Renderer::Renderer() {};
+Renderer::~Renderer() {};
 
 #endif // RENDERER_H_
