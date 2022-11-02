@@ -8,12 +8,16 @@
 
 #include "renderer.hpp"
 #include "common.hpp"
-#include "OGL/ground_mesh.hpp"
+#include "OGL/jello_mesh.hpp"
+#include <vector>
 #include "jello.hpp"
+
 
 int main() 
 {
-    Jello jello;
+    // Jello jello;
+    std::vector<std::vector<int>> flat_map_side(k_jello_slices + 2, std::vector<int>());
+    GLObj::link_jelly_mesh_indices();
     // Renderer renderer;
     // renderer.initialize();
     // renderer.start_looping();

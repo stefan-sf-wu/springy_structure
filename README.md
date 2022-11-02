@@ -25,3 +25,5 @@
 - Tetrahedra Cube
 
 <img src=figures/tetrahedron-cube.png alt="tcube" width="400">
+
+- [VBO Indexing](http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/)

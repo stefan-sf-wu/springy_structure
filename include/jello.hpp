@@ -18,7 +18,7 @@ public:
     Jello()
     {
         // init_jello_vertice_postion();
-        build_jello_struts();
+        build_strut_for_jello();
     };
 
     ~Jello() {};
@@ -51,36 +51,27 @@ private:
         }
     }
         
-    void build_jello_struts()
+    void build_strut_for_jello()
     {
         int i, j, k;
 
         int edge_size = (k_jello_slices + 2);
         std::vector<std::vector<bool>> connected(std::pow(edge_size, 3), std::vector<bool>(std::pow(edge_size, 3), false));   // by vertice indices
 
-        // iterate through each subcube
+        // iterate through each voxel
         for (i = 0; i < k_jello_slices + 1; i++)
         {
             for (j = 0; j < k_jello_slices + 1; j++)
             {
                 for (k = 0; k < k_jello_slices + 1; k++)
                 {
-                    build_strut_for_subcube(k, j, i, connected);
+                    build_strut_for_voxel(k, j, i, connected);
                 }
             }
         }
-
-        for(auto i : connected)
-        {
-            for(auto j : i)
-            {
-                std::cout << j << ' ' ;
-            }
-            std::cout << std::endl;
-        }
     }
 
-    void build_strut_for_subcube(int k, int j, int i, std::vector<std::vector<bool>> &connected)
+    void build_strut_for_voxel(int k, int j, int i, std::vector<std::vector<bool>> &connected)
     {
         int v0 = xyz2index({k,     j,     i});
         int v1 = xyz2index({k + 1, j,     i});
@@ -91,55 +82,52 @@ private:
         int v6 = xyz2index({k,     j + 1, i + 1});
         int v7 = xyz2index({k + 1, j + 1, i + 1});
 
-        if(!connected[v0][v1]) { build_strut_for_vertices(v0, v1); connected[v0][v1] = true; }
-        if(!connected[v1][v3]) { build_strut_for_vertices(v1, v3); connected[v1][v3] = true; }
-        if(!connected[v2][v3]) { build_strut_for_vertices(v2, v3); connected[v2][v3] = true; }
-        if(!connected[v0][v2]) { build_strut_for_vertices(v0, v2); connected[v0][v2] = true; }
+        if(!connected[v0][v1]) { build_strut(v0, v1); connected[v0][v1] = true; }
+        if(!connected[v1][v3]) { build_strut(v1, v3); connected[v1][v3] = true; }
+        if(!connected[v2][v3]) { build_strut(v2, v3); connected[v2][v3] = true; }
+        if(!connected[v0][v2]) { build_strut(v0, v2); connected[v0][v2] = true; }
 
-        if(!connected[v4][v5]) { build_strut_for_vertices(v4, v5); connected[v4][v5] = true; }
-        if(!connected[v5][v7]) { build_strut_for_vertices(v5, v7); connected[v5][v7] = true; }
-        if(!connected[v6][v7]) { build_strut_for_vertices(v6, v7); connected[v6][v7] = true; }
-        if(!connected[v4][v6]) { build_strut_for_vertices(v4, v6); connected[v4][v6] = true; }
+        if(!connected[v4][v5]) { build_strut(v4, v5); connected[v4][v5] = true; }
+        if(!connected[v5][v7]) { build_strut(v5, v7); connected[v5][v7] = true; }
+        if(!connected[v6][v7]) { build_strut(v6, v7); connected[v6][v7] = true; }
+        if(!connected[v4][v6]) { build_strut(v4, v6); connected[v4][v6] = true; }
 
-        if(!connected[v1][v5]) { build_strut_for_vertices(v1, v5); connected[v1][v5] = true; }
-        if(!connected[v3][v7]) { build_strut_for_vertices(v3, v7); connected[v3][v7] = true; }
-        if(!connected[v2][v6]) { build_strut_for_vertices(v2, v6); connected[v2][v6] = true; }
-        if(!connected[v0][v4]) { build_strut_for_vertices(v0, v4); connected[v0][v4] = true; }
+        if(!connected[v1][v5]) { build_strut(v1, v5); connected[v1][v5] = true; }
+        if(!connected[v3][v7]) { build_strut(v3, v7); connected[v3][v7] = true; }
+        if(!connected[v2][v6]) { build_strut(v2, v6); connected[v2][v6] = true; }
+        if(!connected[v0][v4]) { build_strut(v0, v4); connected[v0][v4] = true; }
 
         // cross strut
-        build_strut_for_vertices(v1, v2); connected[v1][v2] = true;
-        build_strut_for_vertices(v2, v4); connected[v2][v4] = true;
-        build_strut_for_vertices(v1, v4); connected[v1][v4] = true;
-        build_strut_for_vertices(v4, v7); connected[v4][v7] = true;
-        build_strut_for_vertices(v1, v7); connected[v1][v7] = true;
-        build_strut_for_vertices(v2, v7); connected[v2][v7] = true;
+        build_strut(v1, v2, k_jello_grid_cross_size); connected[v1][v2] = true;
+        build_strut(v2, v4, k_jello_grid_cross_size); connected[v2][v4] = true;
+        build_strut(v1, v4, k_jello_grid_cross_size); connected[v1][v4] = true;
+        build_strut(v4, v7, k_jello_grid_cross_size); connected[v4][v7] = true;
+        build_strut(v1, v7, k_jello_grid_cross_size); connected[v1][v7] = true;
+        build_strut(v2, v7, k_jello_grid_cross_size); connected[v2][v7] = true;
 
-        // if(!connected[v1][v2]) { build_strut_for_vertices(v1, v2); connected[v1][v2] = true; }
-        // if(!connected[v2][v4]) { build_strut_for_vertices(v2, v4); connected[v2][v4] = true; }
-        // if(!connected[v1][v4]) { build_strut_for_vertices(v1, v4); connected[v1][v4] = true; }
-        // if(!connected[v4][v7]) { build_strut_for_vertices(v4, v7); connected[v4][v7] = true; }
-        // if(!connected[v1][v7]) { build_strut_for_vertices(v1, v7); connected[v1][v7] = true; }
-        // if(!connected[v2][v7]) { build_strut_for_vertices(v2, v7); connected[v2][v7] = true; }
+        // if(!connected[v1][v2]) { build_strut(v1, v2); connected[v1][v2] = true; }
+        // if(!connected[v2][v4]) { build_strut(v2, v4); connected[v2][v4] = true; }
+        // if(!connected[v1][v4]) { build_strut(v1, v4); connected[v1][v4] = true; }
+        // if(!connected[v4][v7]) { build_strut(v4, v7); connected[v4][v7] = true; }
+        // if(!connected[v1][v7]) { build_strut(v1, v7); connected[v1][v7] = true; }
+        // if(!connected[v2][v7]) { build_strut(v2, v7); connected[v2][v7] = true; }
     }
 
-    void build_strut_for_vertices(int v0, int v1)
+    void build_strut(int v0, int v1, float rest_length = k_jello_grid_size)
     {
         strut s;
         s.k_damping     = k_damping_coeff;
         s.k_spring      = k_spring_coeff;
-        s.k_rest_length = compute_rest_length(index2xyz(v0), index2xyz(v1));
+        s.k_rest_length = rest_length;
         s.vertex_indices.push_back(v0);
         s.vertex_indices.push_back(v1);
 
         jello_struts.push_back(s);
     }
 
-    float compute_rest_length(glm::vec3 xyz1, glm::vec3 xyz2)
+    void build_mesh_for_rendering()
     {
-        float sum = std::pow(k_jello_cube_edge_size * (xyz1[0] - xyz2[0]), 2) 
-            + std::pow(k_jello_cube_edge_size * (xyz1[1] - xyz2[1]), 2) 
-            + std::pow(k_jello_cube_edge_size * (xyz1[2] - xyz2[2]), 2);
-        return std::pow(sum, 1/2);
+        
     }
 };
 

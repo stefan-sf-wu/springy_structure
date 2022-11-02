@@ -60,9 +60,10 @@ struct vertex
 // Springy Mesh Params -------------------------------------------------------------------//
 const float k_jello_mass            = 7; // kg
 const float k_jello_edge_size       = 20; // m
-const float k_jello_slices          = 0;
+const float k_jello_slices          = 1;
 const float k_vertex_mass           = (k_jello_mass / std::pow(k_jello_slices + 2, 3)); // kg
-const float k_jello_cube_edge_size  = k_jello_edge_size / (k_jello_slices + 1);
+const float k_jello_grid_size       = k_jello_edge_size / (k_jello_slices + 1);
+const float k_jello_grid_cross_size = std::sqrt(2) * k_jello_grid_size;
 
 const float k_time_constant         = 5; //sec
 const float k_undamped_period       = 3;
