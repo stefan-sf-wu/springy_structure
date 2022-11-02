@@ -11,11 +11,11 @@
 #include "OGL/jello_mesh.hpp"
 #include <vector>
 #include "jello.hpp"
+#include "glm/glm.hpp"
 
 
 int main() 
 {
-    // Jello jello();
     Renderer renderer;
     renderer.initialize();
     renderer.start_looping();

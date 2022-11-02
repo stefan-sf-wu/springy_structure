@@ -12,7 +12,7 @@
 
 #include "common.hpp"
 #include "timer.hpp"
-#include "jello.hpp"
+#include "springy_system_manager.hpp"
 #include "OGL/shader.hpp"
 #include "OGL/tetrahedron_mesh.hpp"
 #include "OGL/ground_mesh.hpp"
@@ -103,11 +103,12 @@ private:
     GLuint jello_vao;
     GLuint jello_vbo;
     GLuint jello_ibo;
+    GLuint jello_color;
 
     glm::mat4 *modelMatrices_1, *modelMatrices_2;
 
     Timer timer;
-    Jello jello;
+    SpringySystemManager ss_manager;
 
 public:
     Renderer();
@@ -120,7 +121,6 @@ public:
       
         // modelMatrices_1 = new glm::mat4[BOID_NUMBER - NUM_LEADING_BOIDS];
         // modelMatrices_2 = new glm::mat4[BOID_NUMBER - NUM_LEADING_BOIDS];
-        update_position_from_manager();
 
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -176,13 +176,13 @@ public:
         glBindVertexArray(jello_vao);
             glGenBuffers(1, &jello_vbo);
             glBindBuffer(GL_ARRAY_BUFFER, jello_vbo);
-            glBufferData(GL_ARRAY_BUFFER, jello.mesh_vertices.size()*sizeof(glm::vec3), glm::value_ptr(jello.mesh_vertices[0]), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, ss_manager.get_jello_mesh_vertices().size()*sizeof(glm::vec3), glm::value_ptr(ss_manager.get_jello_mesh_vertices()[0]), GL_STATIC_DRAW);
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
             glGenBuffers(1, &jello_ibo);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, jello_ibo);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, jello.mesh_indices.size() * sizeof(unsigned int), &jello.mesh_indices[0], GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, ss_manager.get_jello_mesh_indices().size() * sizeof(unsigned int), &ss_manager.get_jello_mesh_indices()[0], GL_STATIC_DRAW);
 
         // ground mesh
         glGenVertexArrays(1, &ground_vao);
@@ -220,14 +220,15 @@ public:
             if (timer.is_time_to_draw()) 
             {
                 timer.update_next_display_time();
-                update_position_from_manager();
+
+                ss_manager.update_mesh_vertex_position();
+                glBindBuffer(GL_ARRAY_BUFFER, jello_vbo);
+                glBufferSubData(GL_ARRAY_BUFFER, 0, ss_manager.get_jello_mesh_vertices().size()*sizeof(glm::vec3), glm::value_ptr(ss_manager.get_jello_mesh_vertices()[0]));
+                
                 draw();
             }
-
-            // flock_manager_1.compute_acceleration();
-            // flock_manager_2.compute_acceleration();
+            ss_manager.compute_next_state();
             timer.update_simulation_time();
-
         }
         delete_GLBuffers();
         glfwTerminate();
@@ -235,7 +236,8 @@ public:
 
     void draw() 
     {
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        // glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // glEnable(GL_DEPTH_TEST);
 
@@ -246,8 +248,12 @@ public:
         // render ground mesh
         glBindVertexArray(ground_vao);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ground_mesh_ibo);
-            glDrawElements(GL_LINES, GLObj::ground_mesh_indices.size()*4, GL_UNSIGNED_INT, NULL);
+            glDrawElements(GL_LINES, GLObj::ground_mesh_indices.size()*4, GL_UNSIGNED_INT, (void*)0);
 
+        // render jello
+        glBindVertexArray(jello_vao);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, jello_ibo);
+            glDrawElements(GL_TRIANGLES, ss_manager.get_jello_mesh_indices().size(), GL_UNSIGNED_INT, (void*)0);
 
         // render tetrahedron
         glBindVertexArray(tetrahedron_vao);
@@ -262,29 +268,6 @@ public:
 
         // glDisable(GL_DEPTH_TEST);
         glfwSwapBuffers(window);
-    }
-
-
-    void update_position_from_manager()
-    {
-        // boids_ptr_1 = flock_manager_1.get_boids();
-        // boids_ptr_2 = flock_manager_2.get_boids();
-
-        // for(int i = 0; i < BOID_NUMBER; i++)
-        // {
-        //     if(i < NUM_LEADING_BOIDS) continue;
-        //     model = glm::mat4(1.0f);
-        //     model = glm::translate(model, transform_phy2gl(boids_ptr_1[i]->position[0]));
-        //     modelMatrices_1[i - NUM_LEADING_BOIDS] = model;
-        // }
-
-        // for(int i = 0; i < BOID_NUMBER; i++)
-        // {
-        //     if(i < NUM_LEADING_BOIDS) continue;
-        //     model = glm::mat4(1.0f);
-        //     model = glm::translate(model, transform_phy2gl(boids_ptr_2[i]->position[0]));
-        //     modelMatrices_2[i - NUM_LEADING_BOIDS] = model;
-        // }
     }
 
     void delete_GLBuffers()

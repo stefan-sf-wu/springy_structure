@@ -59,7 +59,7 @@ struct vertex
 
 // Springy Mesh Params -------------------------------------------------------------------//
 const float k_jello_mass            = 7; // kg
-const float k_jello_edge_size       = 20; // m
+const float k_jello_edge_size       = 80; // m
 const float k_jello_slices          = 1;
 const float k_vertex_mass           = (k_jello_mass / std::pow(k_jello_slices + 2, 3)); // kg
 const float k_jello_grid_size       = k_jello_edge_size / (k_jello_slices + 1);
@@ -72,9 +72,9 @@ const float k_spring_coeff          = (4 * std::pow(M_PI, 2) * k_vertex_mass) / 
 
 const glm::vec3 k_jello_offset = 
 {
-    -(k_jello_edge_size / 2),
-    -(k_jello_edge_size / 2),
-    -(k_jello_edge_size / 2)
+    (k_jello_edge_size),
+    (k_jello_edge_size),
+    2 * (k_jello_edge_size)
 };
 
 
@@ -96,8 +96,21 @@ inline glm::vec3 index2xyz(int index)
 
 
 // OpenGL -------------------------------------------------------------------//
-inline glm::vec3 transform_phy2gl(glm::vec3 vec) { return (vec * (float)(2 / k_world_edge_size))--; }
-inline glm::vec3 transform_gl2phy(glm::vec3 vec) { return vec++ * (float)(k_world_edge_size / 2); }
+inline glm::vec3 transform_phy2gl(glm::vec3 v) {
+    return {
+        (v[0] * 2 / k_world_edge_size) - 1,
+        (v[1] * 2 / k_world_edge_size) - 1,
+        (v[2] * 2 / k_world_edge_size) - 1,
+    };
+}
+
+inline glm::vec3 transform_gl2phy(glm::vec3 v) {
+    return {
+        (v[0] + 1) * (k_world_edge_size / 2),
+        (v[1] + 1) * (k_world_edge_size / 2),
+        (v[2] + 1) * (k_world_edge_size / 2),
+    };
+}
 
 // Debug --------------------------------------------------------------------//
 void print_vec(glm::vec3 vec)

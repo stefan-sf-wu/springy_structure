@@ -43,29 +43,29 @@ void build_flat_map(
     }
 }
 
-void trace_map_and_push_indice(std::vector<std::vector<int>> &flat_map, std::vector<unsigned int> &jelly_mesh_indices)
+void trace_map_and_push_indice(std::vector<std::vector<int>> &flat_map, std::vector<unsigned int> &jello_mesh_indices)
 {
     for (int i = 0; i < flat_map.size() - 1; i++)
     {
         for (int j = 0; j < flat_map[0].size() - 1; j++)
         {
-            jelly_mesh_indices.push_back(flat_map[i][j]);
-            jelly_mesh_indices.push_back(flat_map[i+1][j]);
-            jelly_mesh_indices.push_back(flat_map[i][j+1]);
+            jello_mesh_indices.push_back(flat_map[i][j]);
+            jello_mesh_indices.push_back(flat_map[i+1][j]);
+            jello_mesh_indices.push_back(flat_map[i][j+1]);
         }
         for (int j = 1; j < flat_map[0].size(); j++)
         {
-            jelly_mesh_indices.push_back(flat_map[i + 1][j]);
-            jelly_mesh_indices.push_back(flat_map[i-1+1][j]);
-            jelly_mesh_indices.push_back(flat_map[i + 1][j-1]);
+            jello_mesh_indices.push_back(flat_map[i + 1][j]);
+            jello_mesh_indices.push_back(flat_map[i-1+1][j]);
+            jello_mesh_indices.push_back(flat_map[i + 1][j-1]);
         }
     }
 }
 
-std::vector<unsigned int> link_jelly_mesh_indices()
+std::vector<unsigned int> build_jello_mesh_indices()
 {
-    std::vector<unsigned int> jelly_mesh_indices;
-    jelly_mesh_indices.clear();
+    std::vector<unsigned int> jello_mesh_indices;
+    jello_mesh_indices.clear();
 
     std::vector<std::vector<int>> flat_map_side(k_jello_slices + 2, std::vector<int>());
     std::vector<std::vector<int>> flat_map_top(k_jello_slices + 2, std::vector<int>(k_jello_slices + 2));
@@ -73,11 +73,12 @@ std::vector<unsigned int> link_jelly_mesh_indices()
 
     build_flat_map(flat_map_side, flat_map_top, flat_map_bot);
 
-    trace_map_and_push_indice(flat_map_side, jelly_mesh_indices);
-    trace_map_and_push_indice(flat_map_top, jelly_mesh_indices);
-    trace_map_and_push_indice(flat_map_bot, jelly_mesh_indices);
+    trace_map_and_push_indice(flat_map_side, jello_mesh_indices);
+    trace_map_and_push_indice(flat_map_top, jello_mesh_indices);
+    trace_map_and_push_indice(flat_map_bot, jello_mesh_indices);
 
-    return jelly_mesh_indices;
+
+    return jello_mesh_indices;
 }
 
 } // namespace GLObj

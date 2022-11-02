@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 
 #include "common.hpp"
+#include "jello.hpp"
 
 /**
  * 1. Loop over all particles: accumulate external forces - grav, air drag
@@ -16,21 +17,31 @@
 
 class SpringySystemManager
 {
-private:
-
+public:
+    Jello jello;
 public: 
     SpringySystemManager();
-    ~SpringySystemManager();
+
+    std::vector<unsigned int> &get_jello_mesh_indices()  { return jello.mesh_indices; }
+    std::vector<glm::vec3>    &get_jello_mesh_vertices() { return jello.mesh_vertices; }
 
     void compute_next_state()
     {
-
+        for(int i = 0 ; i < jello.vertices.size(); i++)
+        {
+            jello.vertices[i].position += glm::vec3({0, 0, 10});
+        }
     }
 
-    void build_jelly()
+    void update_mesh_vertex_position()
     {
-
+        jello.update_mesh_vertex_position();
     }
+
+    ~SpringySystemManager();
+private:
+
+
 };
 
 SpringySystemManager::SpringySystemManager() {};

@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <glm/glm.hpp>
+#include <omp.h>
 
 #include "common.hpp"
 #include "OGL/jello_mesh.hpp"
@@ -17,14 +18,36 @@ public:
     std::vector<strut> struts;
     std::vector<unsigned int> mesh_indices;
     std::vector<glm::vec3> mesh_vertices;
+    std::vector<glm::vec3> mesh_vertices_color;
 
 public:
     Jello()
     {
         init_vertice_postion();
         build_strut_for_jello();
-        mesh_indices = GLObj::link_jelly_mesh_indices();
+        mesh_indices = GLObj::build_jello_mesh_indices();
     };
+
+    void update_mesh_vertex_position()
+    {
+        int i, j, k;
+        int num_vertex_each_side = k_jello_slices + 2;
+        #pragma omp parallel for\
+            shared(mesh_vertices, vertices, num_vertex_each_side)\
+            private(i, j, k)\
+            collapse(3)
+        for (i = 0; i < num_vertex_each_side; i++)
+        {
+            for (j = 0; j < num_vertex_each_side; j++)
+            {
+                for (k = 0; k < num_vertex_each_side; k++)
+                {
+                    // speedup: update only vertices needed by OGL
+                    mesh_vertices[xyz2index({k, j, i})] = transform_phy2gl(vertices[xyz2index({k, j, i})].position);
+                }
+            }
+        }
+    }
 
     ~Jello() {};
 
@@ -51,6 +74,7 @@ private:
                         k_jello_offset[2] + (i / (k_jello_slices + 1)) * k_jello_edge_size,
                     };
                     vertices.push_back(v);
+                    mesh_vertices.push_back(transform_phy2gl(v.position));
                 }
             }
         }
@@ -129,6 +153,8 @@ private:
 
         struts.push_back(s);
     }
+
+    
 };
 
 
