@@ -221,7 +221,7 @@ public:
             {
                 timer.update_next_display_time();
 
-                ss_manager.update_mesh_vertex_position();
+                ss_manager.update_jello_mesh_vertices();
                 glBindBuffer(GL_ARRAY_BUFFER, jello_vbo);
                 glBufferSubData(GL_ARRAY_BUFFER, 0, ss_manager.get_jello_mesh_vertices().size()*sizeof(glm::vec3), glm::value_ptr(ss_manager.get_jello_mesh_vertices()[0]));
                 

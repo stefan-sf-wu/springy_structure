@@ -8,7 +8,11 @@
 #include <glm/glm.hpp>
 
 const char k_project_name[] = "SPRINGY STRUCTURES";
-const int k_world_edge_size = 512;
+
+// World Params --------------------------------------------------------------------------//
+
+const int k_world_edge_size = 256;
+const glm::vec3 k_gravity = {0.0f, 0.0f, -10.0};
 
 // Springy Mesh Struct -------------------------------------------------------------------//
 struct strut
@@ -59,7 +63,7 @@ struct vertex
 
 // Springy Mesh Params -------------------------------------------------------------------//
 const float k_jello_mass            = 7; // kg
-const float k_jello_edge_size       = 80; // m
+const float k_jello_edge_size       = 40; // m
 const float k_jello_slices          = 1;
 const float k_vertex_mass           = (k_jello_mass / std::pow(k_jello_slices + 2, 3)); // kg
 const float k_jello_grid_size       = k_jello_edge_size / (k_jello_slices + 1);

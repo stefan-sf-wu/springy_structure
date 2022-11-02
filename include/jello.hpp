@@ -16,6 +16,7 @@ class Jello
 public:
     std::vector<vertex> vertices;
     std::vector<strut> struts;
+    
     std::vector<unsigned int> mesh_indices;
     std::vector<glm::vec3> mesh_vertices;
     std::vector<glm::vec3> mesh_vertices_color;
@@ -23,12 +24,14 @@ public:
 public:
     Jello()
     {
-        init_vertice_postion();
+        init_vertices();
         build_strut_for_jello();
         mesh_indices = GLObj::build_jello_mesh_indices();
+        mesh_vertices.reserve(std::pow(k_jello_slices+2, 3));
+        for (int i = 0; i < std::pow(k_jello_slices + 2, 3); i++) mesh_vertices_color.push_back(k_jello_color);
     };
 
-    void update_mesh_vertex_position()
+    void update_mesh_vertices()
     {
         int i, j, k;
         int num_vertex_each_side = k_jello_slices + 2;
@@ -42,8 +45,11 @@ public:
             {
                 for (k = 0; k < num_vertex_each_side; k++)
                 {
-                    // speedup: update only vertices needed by OGL
-                    mesh_vertices[xyz2index({k, j, i})] = transform_phy2gl(vertices[xyz2index({k, j, i})].position);
+                    if(i == 0 || i == num_vertex_each_side-1 || j == 0 || j == num_vertex_each_side-1 || k == 0 || k == num_vertex_each_side-1)
+                    {
+                        mesh_vertices[xyz2index({k, j, i})] = transform_phy2gl(vertices[xyz2index({k, j, i})].position);
+                    }
+                    
                 }
             }
         }
@@ -52,7 +58,9 @@ public:
     ~Jello() {};
 
 private:
-    void init_vertice_postion()
+    const glm::vec3 k_jello_color = {0.7f, 0.5f, 0.5f};
+
+    void init_vertices()
     {
         int i, j, k;
         vertex v;   

@@ -1,4 +1,6 @@
-
+## TODO
+- color of jello
+- offset calibration of jello
 
 ## load image to texture
 - [Simple OpenGL Image Library (SOIL)](https://github.com/littlstar/soil)
