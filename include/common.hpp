@@ -17,19 +17,19 @@ const glm::vec3 k_gravity = {0.0f, 0.0f, -10.0};
 // Springy Mesh Struct -------------------------------------------------------------------//
 struct strut
 {
-    float k_spring;
-    float k_damping;
-    float k_rest_length;
+    float spring_coeff;
+    float damping_coeff;
+    float rest_length;
     std::vector<unsigned int> vertex_indices;
     std::vector<unsigned int> face_indices;
 
     void clear()
     {
-        k_spring      = 0.0f;
-        k_damping     = 0.0f;
-        k_rest_length = 0.0f;
-        vertex_indices.clear();
-        face_indices.clear();
+        spring_coeff    = 0.0f;
+        damping_coeff   = 0.0f;
+        rest_length     = 0.0f;
+        vertex_indices.reserve(2);
+        face_indices.reserve(2);
     }
 };
 

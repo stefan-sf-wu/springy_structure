@@ -16,7 +16,7 @@ class Jello
 public:
     std::vector<vertex> vertices;
     std::vector<strut> struts;
-    
+
     std::vector<unsigned int> mesh_indices;
     std::vector<glm::vec3> mesh_vertices;
     std::vector<glm::vec3> mesh_vertices_color;
@@ -153,9 +153,9 @@ private:
     void build_strut(int v0, int v1, float rest_length = k_jello_grid_size)
     {
         strut s;
-        s.k_damping     = k_damping_coeff;
-        s.k_spring      = k_spring_coeff;
-        s.k_rest_length = rest_length;
+        s.damping_coeff     = k_damping_coeff;
+        s.spring_coeff      = k_spring_coeff;
+        s.rest_length       = rest_length;
         s.vertex_indices.push_back(v0);
         s.vertex_indices.push_back(v1);
 
