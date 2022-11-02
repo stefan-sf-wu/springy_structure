@@ -10,7 +10,7 @@
 
 namespace GLObj
 {
-std::vector<unsigned int> jelly_mesh_indices;
+
 
 void build_flat_map(
     std::vector<std::vector<int>> &flat_map_side,
@@ -43,7 +43,7 @@ void build_flat_map(
     }
 }
 
-void trace_map_and_push_indice( std::vector<std::vector<int>> &flat_map)
+void trace_map_and_push_indice(std::vector<std::vector<int>> &flat_map, std::vector<unsigned int> &jelly_mesh_indices)
 {
     for (int i = 0; i < flat_map.size() - 1; i++)
     {
@@ -62,8 +62,9 @@ void trace_map_and_push_indice( std::vector<std::vector<int>> &flat_map)
     }
 }
 
-void link_jelly_mesh_indices()
+std::vector<unsigned int> link_jelly_mesh_indices()
 {
+    std::vector<unsigned int> jelly_mesh_indices;
     jelly_mesh_indices.clear();
 
     std::vector<std::vector<int>> flat_map_side(k_jello_slices + 2, std::vector<int>());
@@ -71,11 +72,13 @@ void link_jelly_mesh_indices()
     std::vector<std::vector<int>> flat_map_bot(k_jello_slices + 2, std::vector<int>(k_jello_slices + 2));
 
     build_flat_map(flat_map_side, flat_map_top, flat_map_bot);
-    trace_map_and_push_indice(flat_map_side);
-    trace_map_and_push_indice(flat_map_top);
-    trace_map_and_push_indice(flat_map_bot);
-}
 
+    trace_map_and_push_indice(flat_map_side, jelly_mesh_indices);
+    trace_map_and_push_indice(flat_map_top, jelly_mesh_indices);
+    trace_map_and_push_indice(flat_map_bot, jelly_mesh_indices);
+
+    return jelly_mesh_indices;
+}
 
 } // namespace GLObj
 

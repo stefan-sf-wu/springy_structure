@@ -15,12 +15,10 @@
 
 int main() 
 {
-    // Jello jello;
-    std::vector<std::vector<int>> flat_map_side(k_jello_slices + 2, std::vector<int>());
-    GLObj::link_jelly_mesh_indices();
-    // Renderer renderer;
-    // renderer.initialize();
-    // renderer.start_looping();
+    // Jello jello();
+    Renderer renderer;
+    renderer.initialize();
+    renderer.start_looping();
 	return 0;
 }
 

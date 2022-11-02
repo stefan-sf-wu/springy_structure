@@ -12,6 +12,7 @@
 
 #include "common.hpp"
 #include "timer.hpp"
+#include "jello.hpp"
 #include "OGL/shader.hpp"
 #include "OGL/tetrahedron_mesh.hpp"
 #include "OGL/ground_mesh.hpp"
@@ -99,9 +100,14 @@ private:
     GLuint tetrahedron_vao;
     GLuint tetrahedron_vbo;
 
+    GLuint jello_vao;
+    GLuint jello_vbo;
+    GLuint jello_ibo;
+
     glm::mat4 *modelMatrices_1, *modelMatrices_2;
 
     Timer timer;
+    Jello jello;
 
 public:
     Renderer();
@@ -163,19 +169,33 @@ public:
         glBindVertexArray(tetrahedron_vao);
             glGenBuffers(1, &tetrahedron_vbo);
             glBindBuffer(GL_ARRAY_BUFFER, tetrahedron_vbo);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(GLObj::tetrahedron), GLObj::tetrahedron, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(GLObj::tetrahedron), GLObj::tetrahedron, GL_STATIC_DRAW);
+        
+        // jello
+        glGenVertexArrays(1, &jello_vao);
+        glBindVertexArray(jello_vao);
+            glGenBuffers(1, &jello_vbo);
+            glBindBuffer(GL_ARRAY_BUFFER, jello_vbo);
+            glBufferData(GL_ARRAY_BUFFER, jello.mesh_vertices.size()*sizeof(glm::vec3), glm::value_ptr(jello.mesh_vertices[0]), GL_STATIC_DRAW);
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+            glGenBuffers(1, &jello_ibo);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, jello_ibo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, jello.mesh_indices.size() * sizeof(unsigned int), &jello.mesh_indices[0], GL_STATIC_DRAW);
 
         // ground mesh
         glGenVertexArrays(1, &ground_vao);
         glBindVertexArray(ground_vao);
             glGenBuffers(1, &ground_mesh_vbo);
             glBindBuffer(GL_ARRAY_BUFFER, ground_mesh_vbo);
-                glBufferData(GL_ARRAY_BUFFER, GLObj::ground_mesh_vertices.size()*sizeof(glm::vec3), glm::value_ptr(GLObj::ground_mesh_vertices[0]), GL_STATIC_DRAW);
-                glEnableVertexAttribArray(0);
-                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-                glGenBuffers(1, &ground_mesh_ibo);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ground_mesh_ibo);
-                    glBufferData(GL_ELEMENT_ARRAY_BUFFER, GLObj::ground_mesh_indices.size()*sizeof(glm::uvec4), glm::value_ptr(GLObj::ground_mesh_indices[0]), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, GLObj::ground_mesh_vertices.size()*sizeof(glm::vec3), glm::value_ptr(GLObj::ground_mesh_vertices[0]), GL_STATIC_DRAW);
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+                
+            glGenBuffers(1, &ground_mesh_ibo);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ground_mesh_ibo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, GLObj::ground_mesh_indices.size()*sizeof(glm::uvec4), glm::value_ptr(GLObj::ground_mesh_indices[0]), GL_STATIC_DRAW);
 
         // Declare model/view/projection matrices
         model = glm::mat4(1.0f);

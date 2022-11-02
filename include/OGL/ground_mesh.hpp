@@ -10,16 +10,11 @@ namespace GLObj
 {
 
 const float slices = 20;
+const float ground_mesh_edge_size = 3.0f;
+const glm::vec3 ground_mesh_color = {1.0f, 1.0f, 1.0f};
 
 std::vector<glm::vec3> ground_mesh_vertices;
 std::vector<glm::uvec4> ground_mesh_indices;
-
-std::vector<glm::vec3> &get_ground_mesh_vertices() {return ground_mesh_vertices;}
-std::vector<glm::uvec4> &get_ground_mesh_indices() {return ground_mesh_indices;}
-
-glm::vec3 ground_mesh_color = {1.0f, 1.0f, 1.0f};
-float ground_mesh_edge_size = 3.0f;
-
 
 void build_ground_mesh()
 {

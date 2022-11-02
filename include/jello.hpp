@@ -8,23 +8,28 @@
 #include <glm/glm.hpp>
 
 #include "common.hpp"
+#include "OGL/jello_mesh.hpp"
 
 class Jello
 {
 public:
-    std::vector<vertex> jello_vertices;
-    std::vector<strut> jello_struts;
+    std::vector<vertex> vertices;
+    std::vector<strut> struts;
+    std::vector<unsigned int> mesh_indices;
+    std::vector<glm::vec3> mesh_vertices;
+
 public:
     Jello()
     {
-        // init_jello_vertice_postion();
+        init_vertice_postion();
         build_strut_for_jello();
+        mesh_indices = GLObj::link_jelly_mesh_indices();
     };
 
     ~Jello() {};
 
 private:
-    void init_jello_vertice_postion()
+    void init_vertice_postion()
     {
         int i, j, k;
         vertex v;   
@@ -45,7 +50,7 @@ private:
                         k_jello_offset[1] + (j / (k_jello_slices + 1)) * k_jello_edge_size,
                         k_jello_offset[2] + (i / (k_jello_slices + 1)) * k_jello_edge_size,
                     };
-                    jello_vertices.push_back(v);
+                    vertices.push_back(v);
                 }
             }
         }
@@ -73,10 +78,10 @@ private:
 
     void build_strut_for_voxel(int k, int j, int i, std::vector<std::vector<bool>> &connected)
     {
-        int v0 = xyz2index({k,     j,     i});
-        int v1 = xyz2index({k + 1, j,     i});
-        int v2 = xyz2index({k,     j + 1, i});
-        int v3 = xyz2index({k + 1, j + 1, i});
+        int v0 = xyz2index({k,     j,     i    });
+        int v1 = xyz2index({k + 1, j,     i    });
+        int v2 = xyz2index({k,     j + 1, i    });
+        int v3 = xyz2index({k + 1, j + 1, i    });
         int v4 = xyz2index({k,     j,     i + 1});
         int v5 = xyz2index({k + 1, j,     i + 1});
         int v6 = xyz2index({k,     j + 1, i + 1});
@@ -122,12 +127,7 @@ private:
         s.vertex_indices.push_back(v0);
         s.vertex_indices.push_back(v1);
 
-        jello_struts.push_back(s);
-    }
-
-    void build_mesh_for_rendering()
-    {
-        
+        struts.push_back(s);
     }
 };
 
